@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllUser,createUsers } from "./model.js";
+import { getAllUser,createUsers, removeUser, modifiedUsers } from "./model.js";
 
 export const getUsers = async (req: express.Request, res: express.Response) => {
     try {
@@ -16,8 +16,9 @@ export const getUsers = async (req: express.Request, res: express.Response) => {
 
 export const deleteUser = async (req: express.Request, res: express.Response) => {
     const id = parseInt(req.params.id!)
-    if (id === 3)
-        res.status(200).type("application/json").send({ message: "succesful!" })
+    const result=await removeUser(id);
+    if(result)res.status(200).type("application/json").send({message: "We removed user succesfully!"});
+    else res.status(500).type("application/json").send({message: "We couldn't remove user!"});
 }
 
 export const addUser = async (req: express.Request, res: express.Response) => {
@@ -27,5 +28,16 @@ export const addUser = async (req: express.Request, res: express.Response) => {
         res.status(201).type("application/json").send(user)
     }catch(error){
         res.status(500).type("application/json").send("Nem sikerült létrehozni az új felhasználót!")
+    }
+}
+
+export const updateUser=async(req: express.Request, res: express.Response)=>{
+    const updateUsers=req.body;
+    const id=parseInt(req.params.id!);
+    try{
+        const user=await modifiedUsers(id,updateUsers)
+        res.status(201).type("application/json").send("We refreshed our database!")
+    }catch(error){
+        res.status(500).type("application/json").send("We couldn't refresh our database!")
     }
 }
