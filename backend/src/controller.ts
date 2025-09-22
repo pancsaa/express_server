@@ -27,7 +27,7 @@ export const addUser = async (req: express.Request, res: express.Response) => {
         const user=await createUsers(newUSer);
         res.status(201).type("application/json").send(user)
     }catch(error){
-        res.status(500).type("application/json").send("Nem sikerült létrehozni az új felhasználót!")
+        res.status(500).type("application/json").send({error:"Nem sikerült létrehozni az új felhasználót!"})
     }
 }
 
@@ -36,8 +36,22 @@ export const updateUser=async(req: express.Request, res: express.Response)=>{
     const id=parseInt(req.params.id!);
     try{
         const user=await modifiedUsers(id,updateUsers)
-        res.status(201).type("application/json").send("We refreshed our database!")
+        res.status(201).type("application/json").send(user)
     }catch(error){
-        res.status(500).type("application/json").send("We couldn't refresh our database!")
+        res.status(500).type("application/json").send({error:"We couldn't refresh our database!"})
     }
+}
+
+export const getCurrentUser=async(req:express.Request,res:express.Request)=>{
+    const id=parseInt(req.params.id!)
+    try{
+        const users=await getUserById(id);
+        res.status(200).type("application/json").send(users)
+    }catch(error){
+        res.status(500).type("application/json").send({error:"Szerverhiba"})
+    }
+}
+
+export const updateFullUser=async(req:express.Request,res:express.Request)=>{
+
 }

@@ -18,7 +18,7 @@ import mysql, { type ResultSetHeader } from "mysql2/promise";
 
  //összes felhasználó lekérése:
  export const getAllUser= async()=>{
-    const [rows]=await pool.query("SELECT * FROM users")
+    const [rows]=await pool.query<mysql.RowDataPacket[]>("SELECT * FROM users")
     return rows;
  }
 
@@ -38,6 +38,22 @@ export const removeUser=async(id:number)=>{
 
 //user módosítása
 export const modifiedUsers=async(id:number,user: Partial<User>)=>{
-   const [result]=await pool.query<mysql.ResultSetHeader>("UPDATE users SET nev = ?, cim = ?, szuletesiDatum = ? WHERE id=?", [user.nev,user.cim,user.szuletesiDatum, id])
-   return {...user, id:result.insertId};
+   let currentUser;
+   const [actualUser]=await pool.query<mysql.RowDataPacket[]>("SELECT * FROM users WHERE id=?",[id])
+   if(actualUser.length===0){
+      currentUser=actualUser[0]
+      console.log(currentUser, typeof currentUser)
+   }
+   const updatedUser={
+      id:id,
+      nev:user.nev ?? currentUser!.nev,
+      cim:user.cim ?? currentUser!.cim,
+      szuletesiDatum:user.szuletesiDatum ?? currentUser!.szuletesiDatum,
+   }
+   const [resultUser]=await pool.query<mysql.ResultSetHeader>("UPDATE users SET nev = ?, cim = ?, szuletesiDatum = ? WHERE id=?", [updatedUser.nev,updatedUser.cim,updatedUser.szuletesiDatum, id])
+   return {...user, id:resultUser.insertId};
+}
+
+export const getUserById=async(id:number)=>{
+   const[rows]=await pool.query<mysql.RowDataPacket[]>
 }
