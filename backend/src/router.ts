@@ -1,12 +1,15 @@
 import { Router } from "express";
-import { getUsers,deleteUser,addUser, updateUser, getCurrentUser,updateFullUser } from "./controller.js";
+import { getAll, deleteUser, addUser, updateUser, getCurrentUser, updateFullUser,searchUsers } from "./controller.js";
 
- const router=Router()
- router.get("/users", getUsers)
- router.delete("/users/:id", deleteUser)
- router.post("/users", addUser)
- router.patch("/users/:id",updateUser)
- router.put("users/:id",updateFullUser)
- router.get("users/:id" getCurrentUser)
+const router = Router();
 
- export default router;
+router.get("/users", getAll);
+router.get("/users/:id", getCurrentUser);
+router.get("/search", searchUsers)
+router.delete("/users/:id", deleteUser);
+router.post("/users", addUser);
+router.patch("/users/:id", updateUser);
+router.put("/users/:id", updateFullUser);
+
+
+export default router;
